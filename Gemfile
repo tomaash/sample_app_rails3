@@ -15,6 +15,8 @@ end
 group :test do
   # rspec in :test group for actually running tests
   gem 'rspec', '2.0.0.beta.18'
+  # Speeds up rspec
+  gem 'spork', '0.8.4'
 end
 
 # Use unicorn as the web server
