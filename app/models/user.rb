@@ -10,6 +10,8 @@
 #  updated_at :datetime
 #
 
+require 'digest'
+
 class User < ActiveRecord::Base
   attr_accessor :password # creates virtual "password" attribute
   attr_accessible :name, :email, :password, :password_confirmation
@@ -39,10 +41,22 @@ class User < ActiveRecord::Base
   private
 
     def encrypt_password
+      # new_record? rturnes true if object has not yet been saved to DB
+      # In this case, it ensures that salt is only created once, when user is
+      # created.
+      self.salt = make_salt if new_record?
       self.encrypted_password = encrypt(password)
     end
 
     def encrypt(string)
-      string # temporary!
+      secure_hash("#{salt}--#{string}")
+    end
+
+    def make_salt
+      secure_hash("#{Time.now.utc}--#{password}")
+    end
+
+    def secure_hash(string)
+      Digest::SHA2.hexdigest(string)
     end
 end
