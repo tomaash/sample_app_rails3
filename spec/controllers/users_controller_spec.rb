@@ -80,6 +80,17 @@ describe UsersController do
         post :create, :user => @attr
         response.should render_template('new')
       end
+
+      it "should clear the password field" do
+        # Set a non-empty password so we can check that it was cleared
+        hash = @attr.merge({:password => 'foobar',
+                           :password_confirmation => 'foobar'})
+        post :create, :user => hash
+        # :value => "" ensures that the field is empty (like /^$/).
+        # :content => "" does not; it will match anything (like //).
+        response.should have_selector("input[name='user[password]']",
+                                      :value => "")
+      end
     end # failure
 
     describe "success" do
