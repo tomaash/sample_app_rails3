@@ -33,6 +33,10 @@ Spork.prefork do
     # instead of true.
     config.use_transactional_fixtures = true
 
+    def test_sign_in(user)
+      controller.current_user = user
+    end
+
     ### Part of a Spork hack. See http://bit.ly/arY19y
     # Emulate initializer set_clear_dependencies_hook in
     # railties/lib/rails/application/bootstrap.rb
