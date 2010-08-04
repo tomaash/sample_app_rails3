@@ -53,7 +53,7 @@ class User < ActiveRecord::Base
   private
 
     def encrypt_password
-      # new_record? rturnes true if object has not yet been saved to DB
+      # new_record? returns true if object has not yet been saved to DB
       # In this case, it ensures that salt is only created once, when user is
       # created.
       self.salt = make_salt if new_record?
