@@ -67,6 +67,20 @@ describe UsersController do
       response.should have_selector("span.content", :content => mp2.content)
     end
 
+    it "should paginate the user's microposts" do
+      @microposts = []
+      99.times do
+        @microposts << Factory(:micropost , :user => @user)
+      end
+      get :show, :id => @user
+      response.should have_selector("div.pagination")
+      response.should have_selector("span.disabled", :content => "Previous")
+      response.should have_selector("a", :href => "/users/1?page=2",
+                                    :content => "2")
+      response.should have_selector("a", :href => "/users/1?page=2",
+                                    :content => "Next")
+    end
+
     it "should show delete links for the signed-in user's posts" do
       mp1 = Factory(:micropost, :user => @user, :content => "Foo bar 1")
       mp2 = Factory(:micropost, :user => @user, :content => "Foo bar 2")
