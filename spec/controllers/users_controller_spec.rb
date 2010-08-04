@@ -66,7 +66,26 @@ describe UsersController do
       response.should have_selector("span.content", :content => mp1.content)
       response.should have_selector("span.content", :content => mp2.content)
     end
-  end
+
+    it "should show delete links for the signed-in user's posts" do
+      mp1 = Factory(:micropost, :user => @user, :content => "Foo bar 1")
+      mp2 = Factory(:micropost, :user => @user, :content => "Foo bar 2")
+      test_sign_in(@user)
+      get :show, :id => @user
+      response.should have_selector('td > a[data-method="delete"]',
+                                    :content => "delete")
+    end
+
+    it "should not show delete links for another user's posts" do
+      other_user = Factory(:user, :email => Factory.next(:email))
+      mp1 = Factory(:micropost, :user => other_user, :content => "Foobar 1")
+      mp2 = Factory(:micropost, :user => other_user, :content => "Foobar 2")
+      test_sign_in(@user)
+      get :show, :id => other_user
+      response.should_not have_selector('td > a[data-method="delete"]',
+                                        :content => "delete")
+    end
+  end # GET 'show'
 
   describe "POST 'create'" do
     describe "failure" do
