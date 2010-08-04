@@ -16,7 +16,7 @@ class User < ActiveRecord::Base
   attr_accessor :password # creates virtual "password" attribute
   attr_accessible :name, :email, :password, :password_confirmation
 
-  has_many :microposts
+  has_many :microposts, :dependent => :destroy
 
   # http://railstutorial.org/chapters/modeling-and-viewing-users-one#code:validates_format_of_email
   email_regex = /\A[\w+\-.]+@[a-z\d\-.]+\.[a-z]+\z/i
