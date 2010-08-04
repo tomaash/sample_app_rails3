@@ -145,4 +145,14 @@ describe User do
       @user.should be_admin
     end
   end # admin attribute
+
+  describe "micropost associations" do
+    before(:each) do
+      @user = User.create(@attr)
+    end
+
+    it "should have a microposts attribute" do
+      @user.should respond_to(:microposts)
+    end
+  end # micropost associations
 end
