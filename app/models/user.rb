@@ -19,6 +19,7 @@ class User < ActiveRecord::Base
   has_many :microposts, :dependent => :destroy
   has_many :relationships, :foreign_key => "follower_id",
                            :dependent => :destroy
+  has_many :following, :through => :relationships, :source => :followed
 
   # http://railstutorial.org/chapters/modeling-and-viewing-users-one#code:validates_format_of_email
   email_regex = /\A[\w+\-.]+@[a-z\d\-.]+\.[a-z]+\z/i
@@ -35,6 +36,14 @@ class User < ActiveRecord::Base
                        :length       => { :within => 6..40 }
 
   before_save :encrypt_password
+
+  def following?(followed)
+    relationships.find_by_followed_id(followed)
+  end
+
+  def follow!(followed)
+    relationships.create!(:followed_id => followed.id)
+  end
 
   def feed
     Micropost.where("user_id = ?", id)
