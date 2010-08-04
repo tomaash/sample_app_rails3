@@ -217,5 +217,15 @@ describe User do
       @user.follow!(@followed)
       @user.following.include?(@followed).should be_true
     end
+
+    it "should have an unfollow! method" do
+      @user.should respond_to(:unfollow!)
+    end
+
+    it "should unfollow a user" do
+      @user.follow!(@followed)
+      @user.unfollow!(@followed)
+      @user.should_not be_following(@followed)
+    end
   end # relationships
 end
