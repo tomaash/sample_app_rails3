@@ -31,10 +31,10 @@ def make_users
 end
 
 def make_microposts
-  User.all(:limit => 6).each do |user|
-    50.times do
-      user.microposts.create!(:content => Faker::Lorem.sentence(5))
-    end
+  users = User.all(:limit => 6)
+  # 50 microposts / user, hopefully spread fairly evenly
+  (50 * users.size).times do
+    users.sample.microposts.create!(:content => Faker::Lorem.sentence(5))
   end
 end
 
