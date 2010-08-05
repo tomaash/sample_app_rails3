@@ -24,6 +24,13 @@ class User < ActiveRecord::Base
                            :dependent => :destroy
   has_many :following, :through => :relationships, :source => :followed
 
+  has_many :reverse_relationships, :foreign_key => "followed_id",
+                                   :class_name => "Relationship",
+                                   :dependent => :destroy
+  has_many :followers,
+           :through => :reverse_relationships,
+           :source => :follower
+
   # http://railstutorial.org/chapters/modeling-and-viewing-users-one#code:validates_format_of_email
   email_regex = /\A[\w+\-.]+@[a-z\d\-.]+\.[a-z]+\z/i
 
