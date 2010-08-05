@@ -7,27 +7,43 @@ describe PagesController do
   end
 
   describe "GET 'home'" do
-    it "should be successful" do
-      get :home
-      response.should be_success
-    end
+    describe "when not signed in" do
+      it "should be successful" do
+        get :home
+        response.should be_success
+      end
 
-    it "should have the right title" do
-      get :home
-      response.should have_selector("title",
-                                    :content => "#{@base_title} Home")
-    end
+      it "should have the right title" do
+        get :home
+        response.should have_selector("title",
+                                      :content => "#{@base_title} Home")
+      end
+    end # when not signed in
 
-    it "should show delete links for a signed-in user" do
-      user = Factory(:user)
-      # Create a micropost so we get a delete link
-      user.microposts.create!(:content => "Blah")
-      test_sign_in(user)
-      get :home
-      response.should have_selector('td > a[data-method="delete"]',
-                                    :content => "delete")
-    end
-  end
+    describe "when signed in" do
+      before(:each) do
+        @user = test_sign_in(Factory(:user))
+        other_user = Factory(:user, :email => Factory.next(:email))
+        other_user.follow!(@user)
+      end
+
+      it "should show delete links" do
+        # Create a micropost so we get a delete link
+        @user.microposts.create!(:content => "Blah")
+        get :home
+        response.should have_selector('td > a[data-method="delete"]',
+                                      :content => "delete")
+      end
+
+      it "should have the right follower/following counts" do
+        get :home
+        response.should have_selector('a', :href => following_user_path(@user),
+                                           :content => "0 following")
+        response.should have_selector('a', :href => followers_user_path(@user),
+                                           :content => "1 follower")
+      end
+    end # when signed in
+  end # GET 'home'
 
   describe "GET 'contact'" do
     before(:each) do
