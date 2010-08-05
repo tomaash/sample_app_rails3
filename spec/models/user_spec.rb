@@ -183,6 +183,13 @@ describe User do
                       :user => Factory(:user, :email => Factory.next(:email)))
         @user.feed.include?(mp3).should be_false
       end
+
+      it "should include the microposts of followed users" do
+        followed = Factory(:user, :email => Factory.next(:email))
+        mp3 = Factory(:micropost, :user => followed)
+        @user.follow!(followed)
+        @user.feed.include?(mp3).should be_true
+      end
     end # status feed
   end # micropost associations
 
