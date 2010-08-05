@@ -8,7 +8,7 @@ describe RelationshipsController do
     end
 
     it "should require signin for destroy" do
-      delete :destroy
+      delete :destroy, :id => 1
       response.should redirect_to(signin_path)
     end
   end # access control
@@ -28,7 +28,7 @@ describe RelationshipsController do
 
     it "should create a relationship using Ajax" do
       lambda do
-        xhr :create, :relationship => { :followed_id => @followed }
+        xhr :post, :create, :relationship => { :followed_id => @followed }
         response.should be_success
       end.should change(Relationship, :count).by(1)
     end
@@ -51,7 +51,7 @@ describe RelationshipsController do
 
     it "should destroy a relationship using Ajax" do # every web developer's fear :)
       lambda do
-        xhr :destroy, :id => @relationship
+        xhr :delete, :destroy, :id => @relationship
         response.should be_success
       end.should change(Relationship, :count).by(-1)
     end
